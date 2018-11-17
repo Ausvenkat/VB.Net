@@ -1,0 +1,137 @@
+Public Class Form1
+
+    Private Sub SaveToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles SaveToolStripMenuItem.Click
+        SaveFileDialog1.ShowDialog()
+        If My.Computer.FileSystem.FileExists(SaveFileDialog1.FileName) Then
+            Dim ask As MsgBoxResult
+            ask = MsgBox("File already exits,would you like to replace it?", MsgBoxStyle.YesNoCancel, "file exist")
+            If ask = MsgBoxResult.No Then
+                SaveFileDialog1.ShowDialog()
+            ElseIf ask = MsgBoxResult.Yes Then
+                My.Computer.FileSystem.WriteAllText(SaveFileDialog1.FileName, TextBox1.Text, False)
+            End If
+        Else
+            Try
+                My.Computer.FileSystem.WriteAllText(SaveFileDialog1.FileName, TextBox1.Text, False)
+            Catch ex As Exception
+
+            End Try
+        End If
+    End Sub
+
+    Private Sub UndoCtrlzToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles UndoCtrlzToolStripMenuItem.Click
+        If TextBox1.CanUndo Then
+            TextBox1.Undo()
+        Else
+        End If
+    End Sub
+
+    Private Sub NewToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles NewToolStripMenuItem.Click
+        If TextBox1.Modified Then
+
+            Dim a As MsgBoxResult
+            a = MsgBox("do you want to changes", MsgBoxStyle.YesNoCancel, "New Document")
+            If a = MsgBoxResult.No Then
+                TextBox1.Clear()
+            ElseIf a = MsgBoxResult.Cancel Then
+            ElseIf a = MsgBoxResult.Yes Then
+                SaveFileDialog1.ShowDialog()
+                My.Computer.FileSystem.WriteAllText(SaveFileDialog1.FileName, TextBox1.Text, False)
+                TextBox1.Clear()
+            End If
+        Else
+            TextBox1.Clear()
+
+        End If
+    End Sub
+
+    
+    Private Sub OpenToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles OpenToolStripMenuItem.Click
+        If TextBox1.Modified Then
+
+            Dim ask As MsgBoxResult
+            ask = MsgBox("do you want to save the file", MsgBoxStyle.YesNoCancel, "Open Document")
+            If ask = MsgBoxResult.No Then
+                OpenFileDialog1.ShowDialog()
+                TextBox1.Text = My.Computer.FileSystem.ReadAllText(OpenFileDialog1.FileName)
+            ElseIf ask = MsgBoxResult.Cancel Then
+            ElseIf ask = MsgBoxResult.Yes Then
+                My.Computer.FileSystem.WriteAllText(SaveFileDialog1.FileName, TextBox1.Text, False)
+                TextBox1.Clear()
+            End If
+        Else
+            OpenFileDialog1.ShowDialog()
+            Try
+                TextBox1.Text = My.Computer.FileSystem.ReadAllText(OpenFileDialog1.FileName)
+
+            Catch ex As Exception
+
+            End Try
+
+        End If
+    End Sub
+
+    Private Sub ExitToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ExitToolStripMenuItem.Click
+        End
+        Me.Close()
+
+    End Sub
+
+    Private Sub CutToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles CutToolStripMenuItem.Click
+        My.Computer.Clipboard.Clear()
+        If TextBox1.SelectionLength > 0 Then
+            My.Computer.Clipboard.SetText(TextBox1.SelectedText)
+
+        End If
+        TextBox1.SelectedText = ""
+
+
+    End Sub
+
+    Private Sub CopyToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles CopyToolStripMenuItem.Click
+        My.Computer.Clipboard.Clear()
+        If TextBox1.SelectionLength > 0 Then
+            My.Computer.Clipboard.SetText(TextBox1.SelectedText)
+
+        End If
+    End Sub
+
+    Private Sub PasteToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PasteToolStripMenuItem.Click
+        If My.Computer.Clipboard.ContainsText Then
+            TextBox1.Paste()
+        End If
+    End Sub
+
+    Private Sub FindToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles FindToolStripMenuItem.Click
+        Dim a As String
+        Dim b As String
+        a = InputBox("Enter text to be found")
+        b = InStr(TextBox1.Text, a)
+        If b Then
+            TextBox1.Focus()
+            TextBox1.SelectionStart = b - 1
+            TextBox1.SelectionStart = Len(a)
+        Else
+            MsgBox("Text not found")
+        End If
+
+    End Sub
+    Private Sub FontToolStripMenuItem_Click_1(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles FontToolStripMenuItem.Click
+        FontDialog1.ShowDialog()
+        TextBox1.Font = FontDialog1.Font
+
+    End Sub
+    Private Sub FontColorToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles FontColorToolStripMenuItem.Click
+        ColorDialog1.ShowDialog()
+        TextBox1.ForeColor = ColorDialog1.Color
+    End Sub
+
+    Private Sub BackgroundColorToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BackgroundColorToolStripMenuItem.Click
+        ColorDialog1.ShowDialog()
+        TextBox1.BackColor = ColorDialog1.Color
+    End Sub
+
+    Private Sub HelpToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles HelpToolStripMenuItem.Click
+        MsgBox("HI IAM AUS")
+    End Sub
+End Class
